@@ -14,10 +14,10 @@ class StudentRepository private constructor(context: Context) {
         context.applicationContext,
         StudentDatabase::class.java,
         DATABASE_NAME
-    ).allowMainThreadQueries().build()
+    ).build()
     private val studentDao = database.studentDao()
-    fun getStudents(): List<Student> = studentDao.getStudents()
-    fun getStudent(id: UUID): Student? = studentDao.getStudent(id)
+    fun getStudents(): LiveData<List<Student>> = studentDao.getStudents()
+    fun getStudent(id: UUID): LiveData<Student?> = studentDao.getStudent(id)
     private val executor = Executors.newSingleThreadExecutor()
 
     fun addStudent(student: Student) {
@@ -30,6 +30,13 @@ class StudentRepository private constructor(context: Context) {
             studentDao.updateStudent(student)
         }
     }
+    fun deleteStudent(student: Student) {
+        executor.execute {
+            studentDao.deleteStudent(student)
+        }
+    }
+
+
 
     companion object {
         private var INSTANCE: StudentRepository? = null
@@ -40,7 +47,7 @@ class StudentRepository private constructor(context: Context) {
         }
         fun get(): StudentRepository {
             return INSTANCE ?:
-            throw IllegalStateException("CrimeRepository must be initialized")
+            throw IllegalStateException("StudentRepository must be initialized")
         }
     }
 }

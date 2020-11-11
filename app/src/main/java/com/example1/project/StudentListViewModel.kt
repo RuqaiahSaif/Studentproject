@@ -12,4 +12,8 @@ class StudentListViewModel: ViewModel() {
     fun updateStudent(student: Student) {
         studentRepository.updateStudent(student)
     }
+    fun deleteStudent(student: Student) {
+        studentRepository.deleteStudent(student)
+    }
+
 }
